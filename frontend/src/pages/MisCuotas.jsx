@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import API_URL from '../config';
 
 export default function MisCuotas() {
   const [cuotas, setCuotas] = useState([]);
@@ -9,7 +10,7 @@ export default function MisCuotas() {
   const { token } = useAuth();
 
   useEffect(() => {
-    axios.get('http://localhost:3001/api/cuotas/mis-cuotas', {
+    axios.get(`${API_URL}/api/cuotas/mis-cuotas`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(res => setCuotas(res.data))

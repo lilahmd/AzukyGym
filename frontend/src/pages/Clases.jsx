@@ -1,7 +1,7 @@
- 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import API_URL from '../config';
 
 export default function Clases() {
   const [clases, setClases] = useState([]);
@@ -11,7 +11,7 @@ export default function Clases() {
   const { token } = useAuth();
 
   useEffect(() => {
-    axios.get('http://localhost:3001/api/clases')
+    axios.get(`${API_URL}/api/clases`)
       .then(res => setClases(res.data))
       .finally(() => setCargando(false));
   }, []);
@@ -24,12 +24,12 @@ export default function Clases() {
     setReservando(horario_id);
     try {
       const fecha = new Date().toISOString().split('T')[0];
-      await axios.post('http://localhost:3001/api/reservas',
+      await axios.post(`${API_URL}/api/reservas`,
         { horario_id, fecha },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setMensaje('¡Reserva realizada correctamente!');
-      const res = await axios.get('http://localhost:3001/api/clases');
+      const res = await axios.get(`${API_URL}/api/clases`);
       setClases(res.data);
     } catch (err) {
       setMensaje(err.response?.data?.error || 'Error al reservar');

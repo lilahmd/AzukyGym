@@ -1,8 +1,8 @@
- 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+import API_URL from '../config';
 
 export default function Dashboard() {
   const { usuario, token } = useAuth();
@@ -10,7 +10,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (usuario?.tipo === 'admin') {
-      axios.get('http://localhost:3001/api/admin/resumen', {
+      axios.get(`${API_URL}/api/admin/resumen`, {
         headers: { Authorization: `Bearer ${token}` }
       }).then(res => setResumen(res.data));
     }
@@ -66,7 +66,7 @@ export default function Dashboard() {
               <h1>🏋️</h1>
               <h5 className="fw-bold">Clases</h5>
               <p className="text-muted">Ver todas las clases disponibles</p>
-              <Link to="/" className="btn text-white" style={{ backgroundColor: '#e94560' }}>
+              <Link to="/clases" className="btn text-white" style={{ backgroundColor: '#e94560' }}>
                 Ver clases
               </Link>
             </div>

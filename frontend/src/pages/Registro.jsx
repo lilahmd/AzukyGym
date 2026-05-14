@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../config';
 
 export default function Registro() {
   const [form, setForm] = useState({ nombre: '', email: '', password: '', telefono: '' });
@@ -15,7 +16,7 @@ export default function Registro() {
     setCargando(true);
     setError('');
     try {
-      await axios.post('http://localhost:3001/api/auth/registro', form);
+      await axios.post(`${API_URL}/api/auth/registro`, form);
       setExito('¡Cuenta creada correctamente! Revisa tu email. Redirigiendo...');
       setTimeout(() => navigate('/login'), 3000);
     } catch (err) {

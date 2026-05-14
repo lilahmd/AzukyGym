@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import API_URL from '../config';
 
 export default function MisReservas() {
   const [reservas, setReservas] = useState([]);
@@ -11,7 +12,7 @@ export default function MisReservas() {
 
   const cargarReservas = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/api/reservas/mis-reservas', {
+      const res = await axios.get(`${API_URL}/api/reservas/mis-reservas`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setReservas(res.data);
@@ -28,7 +29,7 @@ export default function MisReservas() {
 
   const cancelar = async (id) => {
     try {
-      await axios.put(`http://localhost:3001/api/reservas/${id}/cancelar`, {}, {
+      await axios.put(`${API_URL}/api/reservas/${id}/cancelar`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMensaje('Reserva cancelada correctamente');
