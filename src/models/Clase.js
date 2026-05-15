@@ -34,6 +34,14 @@ const Clase = sequelize.define('Clase', {
     type: DataTypes.STRING(500),
     allowNull: true
   },
+  instructor_foto: {
+  type: DataTypes.STRING(500),
+  allowNull: true
+},
+instructor_bio: {
+  type: DataTypes.TEXT,
+  allowNull: true
+},
   activo: {
     type: DataTypes.BOOLEAN,
     defaultValue: true

@@ -1,44 +1,53 @@
- 
 require('dotenv').config();
 const { sequelize, Clase, Horario } = require('../src/models/index');
 
 const clases = [
   {
     nombre: 'Spinning',
-    descripcion: 'Clase de ciclismo indoor de alta intensidad',
+    descripcion: 'Clase de ciclismo indoor de alta intensidad. Quema hasta 600 calorías por sesión con música motivadora y ritmos que te harán superar tus límites.',
     instructor: 'Carlos García',
+    instructor_foto: 'https://randomuser.me/api/portraits/men/32.jpg',
+    instructor_bio: 'Instructor certificado con 8 años de experiencia. Especialista en ciclismo indoor y entrenamiento cardiovascular.',
     duracion_minutos: 45,
     aforo_maximo: 20,
-    imagen_url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400'
+    imagen_url: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400'
   },
   {
     nombre: 'Yoga',
-    descripcion: 'Clase de yoga para todos los niveles',
+    descripcion: 'Clase de yoga para todos los niveles. Mejora tu flexibilidad, equilibrio y bienestar mental con técnicas de respiración y meditación.',
     instructor: 'Ana Martínez',
+    instructor_foto: 'https://randomuser.me/api/portraits/women/44.jpg',
+    instructor_bio: 'Profesora de yoga certificada con 10 años de experiencia. Especialista en yoga Hatha y Vinyasa.',
     duracion_minutos: 60,
     aforo_maximo: 15,
     imagen_url: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400'
   },
   {
     nombre: 'Pilates',
-    descripcion: 'Ejercicios de control corporal y flexibilidad',
+    descripcion: 'Ejercicios de control corporal y flexibilidad. Fortalece tu core, mejora tu postura y elimina dolores de espalda.',
     instructor: 'Laura Sánchez',
+    instructor_foto: 'https://randomuser.me/api/portraits/women/68.jpg',
+    instructor_bio: 'Fisioterapeuta y especialista en Pilates clínico. Más de 6 años ayudando a personas con lesiones.',
     duracion_minutos: 50,
     aforo_maximo: 12,
     imagen_url: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400'
   },
   {
     nombre: 'Zumba',
-    descripcion: 'Baile fitness con ritmos latinos',
+    descripcion: 'Baile fitness con ritmos latinos. La forma más divertida de quemar calorías mientras bailas salsa, merengue y reggaeton.',
     instructor: 'María López',
+    instructor_foto: 'https://randomuser.me/api/portraits/women/26.jpg',
+    instructor_bio: 'Instructora de Zumba certificada y bailarina profesional con 7 años de experiencia.',
     duracion_minutos: 60,
     aforo_maximo: 25,
     imagen_url: 'https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?w=400'
   },
   {
     nombre: 'CrossFit',
-    descripcion: 'Entrenamiento funcional de alta intensidad',
+    descripcion: 'Entrenamiento funcional de alta intensidad. Combina ejercicios de fuerza, resistencia y velocidad para transformar tu cuerpo.',
     instructor: 'Pedro Ruiz',
+    instructor_foto: 'https://randomuser.me/api/portraits/men/85.jpg',
+    instructor_bio: 'Entrenador CrossFit Level 2 con 5 años de experiencia. Ex-atleta de competición.',
     duracion_minutos: 60,
     aforo_maximo: 15,
     imagen_url: 'https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=400'
@@ -66,29 +75,25 @@ async function seed() {
     console.log('Conectado a la base de datos');
 
     for (const c of clases) {
-      const [clase] = await Clase.findOrCreate({
+      const [clase, created] = await Clase.findOrCreate({
         where: { nombre: c.nombre },
         defaults: c
       });
-      console.log(`Clase creada: ${c.nombre}`);
+      if (!created) {
+        await clase.update(c);
+      }
+      console.log(`Clase ${created ? 'creada' : 'actualizada'}: ${c.nombre}`);
 
       const horariosClase = horarios.filter(h => h.clase_nombre === c.nombre);
       for (const h of horariosClase) {
         await Horario.findOrCreate({
           where: { clase_id: clase.id, dia_semana: h.dia_semana, hora_inicio: h.hora_inicio },
-          defaults: {
-            clase_id: clase.id,
-            dia_semana: h.dia_semana,
-            hora_inicio: h.hora_inicio,
-            hora_fin: h.hora_fin,
-            aforo_maximo: h.aforo_maximo
-          }
+          defaults: { clase_id: clase.id, ...h }
         });
       }
-      console.log(`Horarios de ${c.nombre} creados`);
     }
 
-    console.log('Datos iniciales insertados correctamente');
+    console.log('Datos actualizados correctamente');
     process.exit(0);
   } catch (error) {
     console.error('Error:', error.message);
