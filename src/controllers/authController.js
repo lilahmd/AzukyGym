@@ -27,7 +27,9 @@ const registro = async (req, res) => {
       tipo: 'socio'
     });
 
-    enviarBienvenida(usuario.nombre, usuario.email);
+    enviarBienvenida(usuario.nombre, usuario.email).catch(err => 
+  console.error('Error email:', err.message)
+);
 
     res.status(201).json({
       mensaje: 'Socio registrado correctamente',

@@ -1,4 +1,3 @@
- 
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -11,20 +10,51 @@ export default function Registro() {
   const [cargando, setCargando] = useState(false);
   const navigate = useNavigate();
 
+  const validarPassword = (password) => {
+    if (password.length < 8) return 'La contraseña debe tener al menos 8 caracteres';
+    if (!/[A-Z]/.test(password)) return 'La contraseña debe tener al menos una letra mayúscula';
+    if (!/[0-9]/.test(password)) return 'La contraseña debe tener al menos un número';
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setCargando(true);
     setError('');
+
+    const errorPassword = validarPassword(form.password);
+    if (errorPassword) {
+      setError(errorPassword);
+      return;
+    }
+
+    setCargando(true);
     try {
       await axios.post(`${API_URL}/api/auth/registro`, form);
       setExito('¡Cuenta creada correctamente! Revisa tu email. Redirigiendo...');
       setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
-      setError(err.response?.data?.error || 'Error al registrarse');
+      const mensaje = err.response?.data?.error;
+      if (mensaje === 'Ya existe una cuenta con ese email') {
+        setError('Este email ya está registrado. ¿Quieres iniciar sesión?');
+      } else {
+        setError(mensaje || 'Error al registrarse');
+      }
     } finally {
       setCargando(false);
     }
   };
+
+  const getPasswordStrength = () => {
+    const p = form.password;
+    if (!p) return null;
+    const checks = [p.length >= 8, /[A-Z]/.test(p), /[0-9]/.test(p)];
+    const passed = checks.filter(Boolean).length;
+    if (passed === 1) return { text: 'Débil', color: 'danger' };
+    if (passed === 2) return { text: 'Media', color: 'warning' };
+    if (passed === 3) return { text: 'Fuerte', color: 'success' };
+  };
+
+  const strength = getPasswordStrength();
 
   return (
     <div className="container mt-5">
@@ -36,8 +66,17 @@ export default function Registro() {
                 <span style={{ color: '#e94560' }}>Azuky</span>Gym
               </h2>
               <h5 className="text-center mb-4">Crear cuenta</h5>
-              {error && <div className="alert alert-danger">{error}</div>}
-              {exito && <div className="alert alert-success">{exito}</div>}
+              {error && (
+                <div className="alert alert-danger d-flex align-items-center">
+                  ⚠️ {error}
+                  {error.includes('ya está registrado') && (
+                    <Link to="/login" className="ms-2 fw-bold" style={{ color: '#e94560' }}>
+                      Iniciar sesión
+                    </Link>
+                  )}
+                </div>
+              )}
+              {exito && <div className="alert alert-success">✅ {exito}</div>}
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label">Nombre completo</label>
@@ -77,6 +116,22 @@ export default function Registro() {
                     onChange={e => setForm({ ...form, password: e.target.value })}
                     required
                   />
+                  {strength && (
+                    <div className="mt-1">
+                      <small className={`text-${strength.color} fw-bold`}>
+                        Seguridad: {strength.text}
+                      </small>
+                      <div className="progress mt-1" style={{ height: '4px' }}>
+                        <div
+                          className={`progress-bar bg-${strength.color}`}
+                          style={{ width: strength.text === 'Débil' ? '33%' : strength.text === 'Media' ? '66%' : '100%' }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  <small className="text-muted">
+                    Mínimo 8 caracteres, una mayúscula y un número
+                  </small>
                 </div>
                 <button
                   type="submit"
