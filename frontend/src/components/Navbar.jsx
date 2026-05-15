@@ -15,8 +15,7 @@ export default function Navbar() {
       <div className="container">
         <Link className="navbar-brand d-flex align-items-center gap-2" to="/">
           <img src="/logo_azuky_sin_fondo.png" alt="AzukyGym" style={{ height: '45px', width: '45px', objectFit: 'contain' }} />
-          <span className="fw-bold fs-4" style={{ color: '#e94560' }}>Azuky</span>
-          <span className="fw-bold fs-4 text-white">Gym</span>
+         <span className="fw-bold fs-4" style={{ color: '#e94560' }}>Azuky<span className="text-white">Gym</span></span>
         </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span className="navbar-toggler-icon"></span>
