@@ -9,6 +9,7 @@ import MisReservas from './pages/MisReservas';
 import MisCuotas from './pages/MisCuotas';
 import Inicio from './pages/Inicio';
 import Entrenadores from './pages/Entrenadores';
+import Rutinas from './pages/Rutinas';
 
 function RutaProtegida({ children }) {
   const { usuario, cargando } = useAuth();
@@ -30,6 +31,7 @@ function AppRoutes() {
         <Route path="/mis-reservas" element={<RutaProtegida><MisReservas /></RutaProtegida>} />
         <Route path="/mis-cuotas" element={<RutaProtegida><MisCuotas /></RutaProtegida>} />
         <Route path="/entrenadores" element={<Entrenadores />} />
+        <Route path="/rutinas" element={<RutaProtegida><Rutinas /></RutaProtegida>} />
       </Routes>
     </>
   );

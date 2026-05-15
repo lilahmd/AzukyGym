@@ -32,6 +32,11 @@ export default function Navbar() {
               <Link className="nav-link text-white" to="/entrenadores">Entrenadores</Link>
             </li>
             {usuario && (
+              <li className="nav-item">
+                <Link className="nav-link text-white" to="/rutinas">Rutinas</Link>
+              </li>
+              )}
+            {usuario && (
               <>
                 <li className="nav-item">
                   <Link className="nav-link text-white" to="/dashboard">Dashboard</Link>
