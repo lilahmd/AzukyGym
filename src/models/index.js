@@ -1,10 +1,10 @@
- 
 const sequelize = require('../config/database');
 const Usuario = require('./Usuario');
 const Clase = require('./Clase');
 const Horario = require('./Horario');
 const Reserva = require('./Reserva');
 const Cuota = require('./Cuota');
+const TokenReseteo = require('./TokenReseteo');
 
 // Una clase tiene muchos horarios
 Clase.hasMany(Horario, { foreignKey: 'clase_id' });
@@ -22,6 +22,10 @@ Reserva.belongsTo(Horario, { foreignKey: 'horario_id' });
 Usuario.hasMany(Cuota, { foreignKey: 'usuario_id' });
 Cuota.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
+// Un usuario tiene muchos tokens de reseteo
+Usuario.hasMany(TokenReseteo, { foreignKey: 'usuario_id' });
+TokenReseteo.belongsTo(Usuario, { foreignKey: 'usuario_id' });
+
 // Sincronizar base de datos
 sequelize.sync({ alter: true })
   .then(() => console.log('Tablas creadas y sincronizadas correctamente'))
@@ -33,5 +37,6 @@ module.exports = {
   Clase,
   Horario,
   Reserva,
-  Cuota
+  Cuota,
+  TokenReseteo
 };

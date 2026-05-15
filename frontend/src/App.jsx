@@ -10,6 +10,8 @@ import MisCuotas from './pages/MisCuotas';
 import Inicio from './pages/Inicio';
 import Entrenadores from './pages/Entrenadores';
 import Rutinas from './pages/Rutinas';
+import OlvidoPassword from './pages/OlvidoPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function RutaProtegida({ children }) {
   const { usuario, cargando } = useAuth();
@@ -27,6 +29,8 @@ function AppRoutes() {
         <Route path="/clases" element={<Clases />} />
         <Route path="/login" element={usuario ? <Navigate to="/dashboard" /> : <Login />} />
         <Route path="/registro" element={usuario ? <Navigate to="/dashboard" /> : <Registro />} />
+        <Route path="/olvido-password" element={usuario ? <Navigate to="/dashboard" /> : <OlvidoPassword />} />
+        <Route path="/reset-password" element={usuario ? <Navigate to="/dashboard" /> : <ResetPassword />} />
         <Route path="/dashboard" element={<RutaProtegida><Dashboard /></RutaProtegida>} />
         <Route path="/mis-reservas" element={<RutaProtegida><MisReservas /></RutaProtegida>} />
         <Route path="/mis-cuotas" element={<RutaProtegida><MisCuotas /></RutaProtegida>} />

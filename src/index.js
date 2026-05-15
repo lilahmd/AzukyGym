@@ -1,4 +1,3 @@
- 
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -26,12 +25,14 @@ const claseRoutes = require('./routes/claseRoutes');
 const reservaRoutes = require('./routes/reservaRoutes');
 const cuotaRoutes = require('./routes/cuotaRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const resetRoutes = require('./routes/resetRoutes');
 
-app.use('/api/admin', adminRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/clases', claseRoutes);
 app.use('/api/reservas', reservaRoutes);
 app.use('/api/cuotas', cuotaRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/password', resetRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {

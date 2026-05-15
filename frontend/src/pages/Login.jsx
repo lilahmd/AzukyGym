@@ -69,8 +69,11 @@ export default function Login() {
                 </button>
               </form>
               <p className="text-center mt-3">
-                ¿No tienes cuenta? <Link to="/registro" style={{ color: '#e94560' }}>Regístrate</Link>
-              </p>
+  ¿No tienes cuenta? <Link to="/registro" style={{ color: '#e94560' }}>Regístrate</Link>
+</p>
+<p className="text-center">
+  <Link to="/olvido-password" style={{ color: '#e94560', fontSize: '14px' }}>¿Olvidaste tu contraseña?</Link>
+</p>
             </div>
           </div>
         </div>

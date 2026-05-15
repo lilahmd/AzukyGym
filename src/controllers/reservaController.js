@@ -1,5 +1,4 @@
-const { Reserva, Horario, Clase, Usuario } = require('../models/index');
-
+const { Reserva, Horario, Clase, Usuario, Cuota } = require('../models/index');
 
 const misReservas = async (req, res) => {
   try {
@@ -22,6 +21,22 @@ const crearReserva = async (req, res) => {
     const { horario_id, fecha } = req.body;
     if (!horario_id || !fecha) {
       return res.status(400).json({ error: 'Horario y fecha son obligatorios' });
+    }
+
+    // Comprobar que el socio está abonado este mes
+    const mesActual = new Date().getMonth() + 1;
+    const anioActual = new Date().getFullYear();
+    const cuotaPagada = await Cuota.findOne({
+      where: {
+        usuario_id: req.usuario.id,
+        mes: mesActual,
+        anio: anioActual,
+        estado: 'pagada'
+      }
+    });
+
+    if (!cuotaPagada) {
+      return res.status(403).json({ error: 'Necesitas activar tu membresía para reservar clases' });
     }
 
     // Comprobar que la fecha no es más de 7 días en el futuro
@@ -47,7 +62,6 @@ const crearReserva = async (req, res) => {
       return res.status(400).json({ error: 'No hay plazas disponibles en este horario' });
     }
 
-    // Comprobar que no tiene ya una reserva en el mismo horario y fecha
     const reservaExiste = await Reserva.findOne({
       where: { usuario_id: req.usuario.id, horario_id, fecha, estado: 'confirmada' }
     });
@@ -55,21 +69,18 @@ const crearReserva = async (req, res) => {
       return res.status(400).json({ error: 'Ya tienes una reserva en esta clase y fecha' });
     }
 
-    // Comprobar que no tiene otra clase a la misma hora ese día
     const reservasMismoDia = await Reserva.findAll({
       where: { usuario_id: req.usuario.id, fecha, estado: 'confirmada' },
       include: [{ model: Horario }]
     });
 
-    const horarioNuevo = horario;
     for (const r of reservasMismoDia) {
       const h = r.Horario;
-      if (h && h.hora_inicio === horarioNuevo.hora_inicio) {
+      if (h && h.hora_inicio === horario.hora_inicio) {
         return res.status(400).json({ error: 'Ya tienes una clase reservada a esa misma hora' });
       }
     }
 
-    // Comprobar límite de 4 clases al día
     if (reservasMismoDia.length >= 4) {
       return res.status(400).json({ error: 'No puedes reservar más de 4 clases en el mismo día' });
     }
