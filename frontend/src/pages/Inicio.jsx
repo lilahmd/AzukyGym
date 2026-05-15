@@ -280,10 +280,16 @@ export default function Inicio() {
                 <div className="mt-4">
                   <h6 className="fw-bold text-white mb-3">Síguenos</h6>
                   <div className="d-flex gap-3">
-                    <a href="https://www.instagram.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">Instagram</a>
-                    <a href="https://www.tiktok.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">TikTok</a>
-                    <a href="https://www.youtube.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">YouTube</a>
-                  </div>
+                    <a href="https://www.instagram.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">
+                        <i className="bi bi-instagram me-1"></i> Instagram
+                      </a>
+                      <a href="https://www.tiktok.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">
+                        <i className="bi bi-tiktok me-1"></i> TikTok
+                      </a>
+                      <a href="https://www.youtube.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">
+                        <i className="bi bi-youtube me-1"></i> YouTube
+                      </a>
+                     </div>
                 </div>
               </div>
             </div>
