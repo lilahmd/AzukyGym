@@ -1,6 +1,22 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Inicio() {
+  const [contacto, setContacto] = useState({ nombre: '', email: '', mensaje: '' });
+  const [enviado, setEnviado] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+
+  const handleContacto = (e) => {
+    e.preventDefault();
+    setEnviando(true);
+    setTimeout(() => {
+      setEnviado(true);
+      setEnviando(false);
+      setContacto({ nombre: '', email: '', mensaje: '' });
+      setTimeout(() => setEnviado(false), 4000);
+    }, 1500);
+  };
+
   return (
     <div style={{ backgroundColor: '#0a0a0a', color: 'white', minHeight: '100vh' }}>
 
@@ -23,7 +39,7 @@ export default function Inicio() {
                 <span style={{ color: '#e94560', display: 'block' }}>GUERRERO ANIME</span>
               </h1>
               <p className="lead mb-4" style={{ color: '#aaaaaa' }}>
-                El gimnasio donde la fuerza del anime se une a tu entrenamiento. 
+                El gimnasio donde la fuerza del anime se une a tu entrenamiento.
                 Clases dirigidas, control de cuotas y mucho más.
               </p>
               <div className="d-flex gap-3 justify-content-center justify-content-lg-start flex-wrap">
@@ -76,6 +92,51 @@ export default function Inicio() {
               <h2 className="fw-bold display-5">3</h2>
               <p className="mb-0">Sedes</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CLASES DESTACADAS */}
+      <section style={{ padding: '80px 0', backgroundColor: '#0a0a0a' }}>
+        <div className="container">
+          <h2 className="text-center fw-bold mb-2 text-white">Nuestras <span style={{ color: '#e94560' }}>Clases</span></h2>
+          <p className="text-center mb-5" style={{ color: '#aaaaaa' }}>El mejor equipo de instructores te espera</p>
+          <div className="row">
+            {[
+              { nombre: 'Spinning', desc: 'Quema hasta 600 calorías por sesión con música motivadora y el mejor instructor', img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400', instructor: 'Carlos García', foto: 'https://randomuser.me/api/portraits/men/32.jpg' },
+              { nombre: 'Yoga', desc: 'Mejora tu flexibilidad y bienestar mental con nuestras sesiones para todos los niveles', img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400', instructor: 'Ana Martínez', foto: 'https://randomuser.me/api/portraits/women/44.jpg' },
+              { nombre: 'Zumba', desc: 'La forma más divertida de ponerte en forma bailando salsa, merengue y reggaeton', img: 'https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?w=400', instructor: 'María López', foto: 'https://randomuser.me/api/portraits/women/26.jpg' },
+              { nombre: 'Pilates', desc: 'Fortalece tu core y elimina dolores de espalda con ejercicios de control corporal', img: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400', instructor: 'Laura Sánchez', foto: 'https://randomuser.me/api/portraits/women/68.jpg' },
+              { nombre: 'CrossFit', desc: 'Entrenamiento funcional de alta intensidad para transformar tu cuerpo en tiempo récord', img: 'https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=400', instructor: 'Pedro Ruiz', foto: 'https://randomuser.me/api/portraits/men/85.jpg' },
+            ].map((clase, i) => (
+              <div key={i} className="col-md-6 col-lg-4 mb-4">
+                <div className="card h-100" style={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '12px', overflow: 'hidden', transition: 'transform 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'}
+                  onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                >
+                  <div style={{ position: 'relative' }}>
+                    <img src={clase.img} alt={clase.nombre} style={{ width: '100%', height: '180px', objectFit: 'cover' }} />
+                    <div style={{ position: 'absolute', top: '10px', right: '10px', backgroundColor: '#e94560', color: 'white', padding: '3px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }}>
+                      {clase.nombre}
+                    </div>
+                  </div>
+                  <div className="card-body p-3">
+                    <p style={{ color: '#aaaaaa', fontSize: '14px', marginBottom: '12px' }}>{clase.desc}</p>
+                    <div className="d-flex align-items-center" style={{ borderTop: '1px solid #333', paddingTop: '12px' }}>
+                      <img src={clase.foto} alt={clase.instructor} style={{ width: '35px', height: '35px', borderRadius: '50%', border: '2px solid #e94560', objectFit: 'cover' }} />
+                      <div className="ms-2">
+                        <p className="mb-0 text-white fw-bold" style={{ fontSize: '13px' }}>{clase.instructor}</p>
+                        <p className="mb-0" style={{ color: '#e94560', fontSize: '11px' }}>Instructor</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-4">
+            <Link to="/clases" className="btn btn-outline-danger btn-lg px-5 me-3">Ver todos los horarios</Link>
+            <Link to="/registro" className="btn btn-danger btn-lg px-5">¡Únete ahora!</Link>
           </div>
         </div>
       </section>
@@ -156,19 +217,56 @@ export default function Inicio() {
             <div className="col-md-6">
               <div className="card" style={{ backgroundColor: '#1a1a1a', border: '1px solid #e94560', borderRadius: '12px' }}>
                 <div className="card-body p-4">
-                  <div className="mb-3">
-                    <label className="form-label text-white">Nombre</label>
-                    <input type="text" className="form-control" style={{ backgroundColor: '#0a0a0a', color: 'white', border: '1px solid #333' }} placeholder="Tu nombre" />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label text-white">Email</label>
-                    <input type="email" className="form-control" style={{ backgroundColor: '#0a0a0a', color: 'white', border: '1px solid #333' }} placeholder="tu@email.com" />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label text-white">Mensaje</label>
-                    <textarea className="form-control" rows="4" style={{ backgroundColor: '#0a0a0a', color: 'white', border: '1px solid #333' }} placeholder="¿En qué podemos ayudarte?"></textarea>
-                  </div>
-                  <button className="btn btn-danger w-100 fw-bold">Enviar mensaje</button>
+                  {enviado && (
+                    <div className="alert alert-success text-center fw-bold">
+                      ✅ ¡Mensaje enviado correctamente! Te responderemos en breve.
+                    </div>
+                  )}
+                  <form onSubmit={handleContacto}>
+                    <div className="mb-3">
+                      <label className="form-label text-white">Nombre</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        style={{ backgroundColor: '#0a0a0a', color: 'white', border: '1px solid #333' }}
+                        placeholder="Tu nombre"
+                        value={contacto.nombre}
+                        onChange={e => setContacto({ ...contacto, nombre: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label text-white">Email</label>
+                      <input
+                        type="email"
+                        className="form-control"
+                        style={{ backgroundColor: '#0a0a0a', color: 'white', border: '1px solid #333' }}
+                        placeholder="tu@email.com"
+                        value={contacto.email}
+                        onChange={e => setContacto({ ...contacto, email: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label text-white">Mensaje</label>
+                      <textarea
+                        className="form-control"
+                        rows="4"
+                        style={{ backgroundColor: '#0a0a0a', color: 'white', border: '1px solid #333' }}
+                        placeholder="¿En qué podemos ayudarte?"
+                        value={contacto.mensaje}
+                        onChange={e => setContacto({ ...contacto, mensaje: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="btn btn-danger w-100 fw-bold"
+                      disabled={enviando}
+                    >
+                      {enviando ? '📨 Enviando...' : '📨 Enviar mensaje'}
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>
@@ -182,10 +280,10 @@ export default function Inicio() {
                 <div className="mt-4">
                   <h6 className="fw-bold text-white mb-3">Síguenos</h6>
                   <div className="d-flex gap-3">
-                     <a href="https://www.instagram.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm d-flex align-items-center gap-2"><i className="bi bi-instagram"></i> Instagram</a>
-                     <a href="https://www.tiktok.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm d-flex align-items-center gap-2"><i className="bi bi-tiktok"></i> TikTok</a>
-                     <a href="https://www.youtube.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm d-flex align-items-center gap-2"><i className="bi bi-youtube"></i> YouTube</a>
-                    </div>
+                    <a href="https://www.instagram.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">Instagram</a>
+                    <a href="https://www.tiktok.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">TikTok</a>
+                    <a href="https://www.youtube.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">YouTube</a>
+                  </div>
                 </div>
               </div>
             </div>

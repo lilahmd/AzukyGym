@@ -10,6 +10,21 @@ export default function Registro() {
   const [cargando, setCargando] = useState(false);
   const navigate = useNavigate();
 
+  const validarEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regex.test(email)) return 'El email no tiene un formato válido';
+    return null;
+  };
+
+  const validarTelefono = (telefono) => {
+    if (!telefono) return null;
+    const regex = /^[6789]\d{8}$/;
+    if (!regex.test(telefono.replace(/\s/g, ''))) {
+      return 'El teléfono debe ser español: 9 dígitos empezando por 6, 7, 8 o 9';
+    }
+    return null;
+  };
+
   const validarPassword = (password) => {
     if (password.length < 8) return 'La contraseña debe tener al menos 8 caracteres';
     if (!/[A-Z]/.test(password)) return 'La contraseña debe tener al menos una letra mayúscula';
@@ -21,11 +36,14 @@ export default function Registro() {
     e.preventDefault();
     setError('');
 
+    const errorEmail = validarEmail(form.email);
+    if (errorEmail) { setError(errorEmail); return; }
+
+    const errorTelefono = validarTelefono(form.telefono);
+    if (errorTelefono) { setError(errorTelefono); return; }
+
     const errorPassword = validarPassword(form.password);
-    if (errorPassword) {
-      setError(errorPassword);
-      return;
-    }
+    if (errorPassword) { setError(errorPassword); return; }
 
     setCargando(true);
     try {
@@ -79,39 +97,49 @@ export default function Registro() {
               {exito && <div className="alert alert-success">✅ {exito}</div>}
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label className="form-label">Nombre completo</label>
+                  <label className="form-label fw-bold">Nombre completo</label>
                   <input
                     type="text"
                     className="form-control"
+                    placeholder="Tu nombre completo"
                     value={form.nombre}
                     onChange={e => setForm({ ...form, nombre: e.target.value })}
                     required
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Email</label>
+                  <label className="form-label fw-bold">Email</label>
                   <input
                     type="email"
                     className="form-control"
+                    placeholder="ejemplo@correo.com"
                     value={form.email}
                     onChange={e => setForm({ ...form, email: e.target.value })}
                     required
                   />
+                  <small className="text-muted">Introduce un email válido</small>
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Teléfono</label>
-                  <input
-                    type="tel"
-                    className="form-control"
-                    value={form.telefono}
-                    onChange={e => setForm({ ...form, telefono: e.target.value })}
-                  />
+                  <label className="form-label fw-bold">Teléfono <span className="text-muted fw-normal">(opcional)</span></label>
+                  <div className="input-group">
+                    <span className="input-group-text">🇪🇸 +34</span>
+                    <input
+                      type="tel"
+                      className="form-control"
+                      placeholder="600 000 000"
+                      value={form.telefono}
+                      onChange={e => setForm({ ...form, telefono: e.target.value })}
+                      maxLength={9}
+                    />
+                  </div>
+                  <small className="text-muted">9 dígitos empezando por 6, 7, 8 o 9</small>
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Contraseña</label>
+                  <label className="form-label fw-bold">Contraseña</label>
                   <input
                     type="password"
                     className="form-control"
+                    placeholder="Mínimo 8 caracteres"
                     value={form.password}
                     onChange={e => setForm({ ...form, password: e.target.value })}
                     required
@@ -129,9 +157,7 @@ export default function Registro() {
                       </div>
                     </div>
                   )}
-                  <small className="text-muted">
-                    Mínimo 8 caracteres, una mayúscula y un número
-                  </small>
+                  <small className="text-muted">Mínimo 8 caracteres, una mayúscula y un número</small>
                 </div>
                 <button
                   type="submit"
