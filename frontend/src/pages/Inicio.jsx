@@ -134,8 +134,8 @@ export default function Inicio() {
               </div>
             ))}
           </div>
-          <div className="text-center mt-4">
-            <Link to="/clases" className="btn btn-outline-danger btn-lg px-5 me-3">Ver todos los horarios</Link>
+          <div className="text-center mt-4 d-flex flex-wrap justify-content-center gap-3">
+            <Link to="/clases" className="btn btn-outline-danger btn-lg px-5">Ver todos los horarios</Link>
             <Link to="/registro" className="btn btn-danger btn-lg px-5">¡Únete ahora!</Link>
           </div>
         </div>
