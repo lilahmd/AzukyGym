@@ -9,7 +9,6 @@ export default function Clases() {
   const [cargando, setCargando] = useState(true);
   const [reservando, setReservando] = useState(null);
   const [mensaje, setMensaje] = useState('');
-  const [claseActiva, setClaseActiva] = useState('todas');
   const { token, usuario } = useAuth();
 
   useEffect(() => {
@@ -72,7 +71,7 @@ export default function Clases() {
             <div key={clase.id} className="col-md-6 col-lg-4 mb-4">
               <div
                 className="card shadow h-100"
-                style={{ cursor: 'pointer', border: claseActiva === clase.id ? '2px solid #e94560' : '1px solid #dee2e6', transition: 'transform 0.2s' }}
+                style={{ border: '1px solid #dee2e6', transition: 'transform 0.2s' }}
                 onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
               >
@@ -115,15 +114,7 @@ export default function Clases() {
                     <span className="small fw-bold">Aforo máximo: {clase.aforo_maximo} personas</span>
                   </div>
 
-                  <button
-                    className="btn btn-sm w-100 mb-3"
-                    style={{ backgroundColor: '#1a1a2e', color: 'white' }}
-                    onClick={() => setClaseActiva(claseActiva === clase.id ? 'todas' : clase.id)}
-                  >
-                    {claseActiva === clase.id ? '▲ Ocultar horarios' : '▼ Ver horarios'}
-                  </button>
-
-                  {(claseActiva === 'todas' || claseActiva === clase.id) && clase.Horarios && clase.Horarios.length > 0 && (
+                  {clase.Horarios && clase.Horarios.length > 0 && (
                     <div>
                       <h6 className="fw-bold">Horarios disponibles:</h6>
                       {diasSemana.map(dia => {
