@@ -9,7 +9,7 @@ export default function Clases() {
   const [cargando, setCargando] = useState(true);
   const [reservando, setReservando] = useState(null);
   const [mensaje, setMensaje] = useState('');
-  const [claseActiva, setClaseActiva] = useState(null);
+  const [claseActiva, setClaseActiva] = useState('todas');
   const { token, usuario } = useAuth();
 
   useEffect(() => {
@@ -118,12 +118,12 @@ export default function Clases() {
                   <button
                     className="btn btn-sm w-100 mb-3"
                     style={{ backgroundColor: '#1a1a2e', color: 'white' }}
-                    onClick={() => setClaseActiva(claseActiva === clase.id ? null : clase.id)}
+                    onClick={() => setClaseActiva(claseActiva === clase.id ? 'todas' : clase.id)}
                   >
-                    {claseActiva === clase.id ? '▲ Ocultar horarios' : '▼ Ver horarios'}
+                    {claseActiva === 'todas' || claseActiva !== clase.id ? '▲ Ocultar horarios' : '▼ Ver horarios'}
                   </button>
 
-                  {claseActiva === clase.id && clase.Horarios && clase.Horarios.length > 0 && (
+                  {(claseActiva === 'todas' || claseActiva === clase.id) && clase.Horarios && clase.Horarios.length > 0 && (
                     <div>
                       <h6 className="fw-bold">Horarios disponibles:</h6>
                       {diasSemana.map(dia => {
