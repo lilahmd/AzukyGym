@@ -120,7 +120,7 @@ export default function Clases() {
                     style={{ backgroundColor: '#1a1a2e', color: 'white' }}
                     onClick={() => setClaseActiva(claseActiva === clase.id ? 'todas' : clase.id)}
                   >
-                    {claseActiva === 'todas' || claseActiva !== clase.id ? '▲ Ocultar horarios' : '▼ Ver horarios'}
+                    {claseActiva === clase.id ? '▲ Ocultar horarios' : '▼ Ver horarios'}
                   </button>
 
                   {(claseActiva === 'todas' || claseActiva === clase.id) && clase.Horarios && clase.Horarios.length > 0 && (
