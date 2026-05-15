@@ -28,6 +28,9 @@ export default function Navbar() {
             <li className="nav-item">
               <Link className="nav-link text-white" to="/clases">Clases</Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link text-white" to="/entrenadores">Entrenadores</Link>
+            </li>
             {usuario && (
               <>
                 <li className="nav-item">

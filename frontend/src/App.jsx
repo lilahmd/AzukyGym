@@ -8,6 +8,7 @@ import Clases from './pages/Clases';
 import MisReservas from './pages/MisReservas';
 import MisCuotas from './pages/MisCuotas';
 import Inicio from './pages/Inicio';
+import Entrenadores from './pages/Entrenadores';
 
 function RutaProtegida({ children }) {
   const { usuario, cargando } = useAuth();
@@ -28,6 +29,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<RutaProtegida><Dashboard /></RutaProtegida>} />
         <Route path="/mis-reservas" element={<RutaProtegida><MisReservas /></RutaProtegida>} />
         <Route path="/mis-cuotas" element={<RutaProtegida><MisCuotas /></RutaProtegida>} />
+        <Route path="/entrenadores" element={<Entrenadores />} />
       </Routes>
     </>
   );
