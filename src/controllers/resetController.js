@@ -1,10 +1,7 @@
- 
 const crypto = require('crypto');
-const { Usuario, TokenReseteo } = require('../models/index');
-const { Resend } = require('resend');
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 const bcrypt = require('bcrypt');
+const { Usuario, TokenReseteo } = require('../models/index');
+const { enviarResetPassword } = require('../config/email');
 
 const solicitarReset = async (req, res) => {
   try {
@@ -28,29 +25,7 @@ const solicitarReset = async (req, res) => {
 
     const enlace = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
 
-    await resend.emails.send({
-      from: 'AzukyGym <onboarding@resend.dev>',
-      to: email,
-      subject: 'Restablecer contraseña – AzukyGym',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background-color: #0a0a0a; padding: 30px; text-align: center;">
-            <img src="https://azuky-gym.vercel.app/logo_azuky_sin_fondo.png" alt="AzukyGym" style="width: 100px; height: 100px;" />
-            <h1 style="color: #e94560; margin: 10px 0 0 0;">AzukyGym</h1>
-          </div>
-          <div style="padding: 30px; background-color: #f9f9f9;">
-            <h2>Hola ${usuario.nombre} 👋</h2>
-            <p>Has solicitado restablecer tu contraseña. Pulsa el botón para crear una nueva:</p>
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${enlace}" style="background-color: #e94560; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                Restablecer contraseña
-              </a>
-            </div>
-            <p style="color: #666; font-size: 13px;">Este enlace caduca en 1 hora. Si no has solicitado el cambio ignora este email.</p>
-          </div>
-        </div>
-      `
-    });
+    await enviarResetPassword(usuario.nombre, email, enlace);
 
     res.json({ mensaje: 'Si el email existe recibirás un correo con las instrucciones' });
   } catch (error) {
