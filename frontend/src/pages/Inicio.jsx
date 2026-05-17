@@ -1,10 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+
+const frases = [
+  "\"El límite solo existe en tu mente\" – Naruto",
+  "\"Sigue adelante, nunca te rindas\" – Rock Lee",
+  "\"La fuerza no viene del cuerpo, viene de la voluntad\" – Goku",
+  "\"Supera tus límites, ese es el camino del guerrero\" – Vegeta",
+  "\"El esfuerzo de hoy es la victoria de mañana\" – Might Guy",
+];
 
 export default function Inicio() {
   const [contacto, setContacto] = useState({ nombre: '', email: '', mensaje: '' });
   const [enviado, setEnviado] = useState(false);
   const [enviando, setEnviando] = useState(false);
+  const [fraseIndex, setFraseIndex] = useState(0);
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => setCargando(false), 1200);
+    const interval = setInterval(() => {
+      setFraseIndex(i => (i + 1) % frases.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleContacto = (e) => {
     e.preventDefault();
@@ -17,6 +35,19 @@ export default function Inicio() {
     }, 1500);
   };
 
+  if (cargando) {
+    return (
+      <div style={{ backgroundColor: '#0a0a0a', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <img src="/logo_azuky_sin_fondo.png" alt="AzukyGym" className="anime-float" style={{ width: '150px', marginBottom: '20px' }} />
+        <h3 style={{ color: '#e94560', marginBottom: '20px' }}>AzukyGym</h3>
+        <div style={{ width: '200px', height: '3px', backgroundColor: '#222', borderRadius: '3px', overflow: 'hidden' }}>
+          <div className="anime-loader" style={{ height: '100%', borderRadius: '3px' }}></div>
+        </div>
+        <p style={{ color: '#555', marginTop: '15px', fontSize: '13px' }}>Cargando tu dojo...</p>
+      </div>
+    );
+  }
+
   return (
     <div style={{ backgroundColor: '#0a0a0a', color: 'white', minHeight: '100vh' }}>
 
@@ -26,9 +57,42 @@ export default function Inicio() {
         minHeight: '90vh',
         display: 'flex',
         alignItems: 'center',
-        borderBottom: '3px solid #e94560'
+        borderBottom: '3px solid #e94560',
+        position: 'relative',
+        overflow: 'hidden'
       }}>
-        <div className="container">
+        {/* Partículas simuladas con CSS */}
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+          {[
+  { w:3, h:3, l:10, t:20, o:0.3, d:1.5, dur:2.5 },
+  { w:5, h:5, l:25, t:60, o:0.2, d:0.5, dur:3 },
+  { w:2, h:2, l:40, t:30, o:0.4, d:1, dur:2 },
+  { w:4, h:4, l:55, t:80, o:0.15, d:0, dur:3.5 },
+  { w:3, h:3, l:70, t:15, o:0.35, d:0.8, dur:2.8 },
+  { w:6, h:6, l:80, t:50, o:0.2, d:1.2, dur:4 },
+  { w:2, h:2, l:90, t:75, o:0.3, d:0.3, dur:2.2 },
+  { w:4, h:4, l:15, t:85, o:0.25, d:1.8, dur:3.2 },
+  { w:3, h:3, l:35, t:45, o:0.4, d:0.6, dur:2.6 },
+  { w:5, h:5, l:60, t:25, o:0.2, d:1.4, dur:3.8 },
+  { w:2, h:2, l:75, t:90, o:0.3, d:0.2, dur:2.4 },
+  { w:4, h:4, l:95, t:40, o:0.15, d:1.6, dur:3.4 },
+].map((p, i) => (
+  <div key={i} style={{
+    position: 'absolute',
+    width: `${p.w}px`,
+    height: `${p.h}px`,
+    backgroundColor: '#e94560',
+    borderRadius: '50%',
+    left: `${p.l}%`,
+    top: `${p.t}%`,
+    opacity: p.o,
+    animation: `float ${p.dur}s ease-in-out infinite`,
+    animationDelay: `${p.d}s`
+  }} />
+))}
+        </div>
+
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div className="row align-items-center">
             <div className="col-lg-6 text-center text-lg-start">
               <p className="fw-bold mb-2" style={{ color: '#e94560', fontSize: '14px', letterSpacing: '4px' }}>
@@ -36,12 +100,20 @@ export default function Inicio() {
               </p>
               <h1 className="display-3 fw-bold mb-3">
                 ENTRENA COMO UN
-                <span style={{ color: '#e94560', display: 'block' }}>GUERRERO ANIME</span>
+                <span className="anime-glow" style={{ color: '#e94560', display: 'block' }}>GUERRERO ANIME</span>
               </h1>
               <p className="lead mb-4" style={{ color: '#aaaaaa' }}>
                 El gimnasio donde la fuerza del anime se une a tu entrenamiento.
                 Clases dirigidas, control de cuotas y mucho más.
               </p>
+
+              {/* Frase animada */}
+              <div className="mb-4 p-3" style={{ borderLeft: '3px solid #e94560', backgroundColor: 'rgba(233,69,96,0.05)', borderRadius: '0 8px 8px 0' }}>
+                <p className="mb-0" style={{ color: '#e94560', fontSize: '13px', fontStyle: 'italic', transition: 'all 0.5s' }}>
+                  {frases[fraseIndex]}
+                </p>
+              </div>
+
               <div className="d-flex gap-3 justify-content-center justify-content-lg-start flex-wrap">
                 <Link to="/registro" className="btn btn-danger btn-lg fw-bold px-4">
                   🔥 ÚNETE GRATIS
@@ -50,7 +122,7 @@ export default function Inicio() {
                   Ver clases
                 </Link>
               </div>
-              <div className="mt-4 p-3 d-inline-block" style={{
+              <div className="mt-4 p-3 d-inline-block anime-pulse" style={{
                 background: 'linear-gradient(135deg, #e94560, #ff6b35)',
                 borderRadius: '10px'
               }}>
@@ -61,6 +133,7 @@ export default function Inicio() {
               <img
                 src="/logo_azuky_sin_fondo.png"
                 alt="AzukyGym"
+                className="anime-float"
                 style={{
                   width: '100%',
                   maxWidth: '450px',
@@ -96,6 +169,36 @@ export default function Inicio() {
         </div>
       </section>
 
+      {/* FRASES MOTIVADORAS ANIME */}
+      <section style={{ padding: '60px 0', backgroundColor: '#050505', borderTop: '1px solid #1a1a1a', borderBottom: '1px solid #1a1a1a' }}>
+        <div className="container">
+          <h3 className="text-center fw-bold mb-5">
+            💪 Sabiduría de <span style={{ color: '#e94560' }}>Guerreros Anime</span>
+          </h3>
+          <div className="row">
+            {[
+              { frase: '"El dolor de hoy es la fuerza de mañana"', personaje: 'Naruto Uzumaki', serie: 'Naruto', emoji: '🍥' },
+              { frase: '"No importa cuántas veces caigas, siempre levántate"', personaje: 'Rock Lee', serie: 'Naruto', emoji: '💪' },
+              { frase: '"El que abandona gana experiencia. El que no abandona, gana victoria"', personaje: 'Might Guy', serie: 'Naruto', emoji: '🔥' },
+              { frase: '"Superar tus propios límites es lo que te hace crecer"', personaje: 'Goku', serie: 'Dragon Ball', emoji: '⚡' },
+            ].map((q, i) => (
+              <div key={i} className="col-md-6 mb-4">
+                <div className="p-4 h-100" style={{ backgroundColor: '#0d0d0d', border: '1px solid #1a1a1a', borderLeft: '3px solid #e94560', borderRadius: '0 8px 8px 0' }}>
+                  <p style={{ color: '#cccccc', fontStyle: 'italic', fontSize: '15px' }}>{q.frase}</p>
+                  <div className="d-flex align-items-center mt-2">
+                    <span style={{ fontSize: '24px', marginRight: '8px' }}>{q.emoji}</span>
+                    <div>
+                      <p className="mb-0 fw-bold" style={{ color: '#e94560', fontSize: '13px' }}>{q.personaje}</p>
+                      <p className="mb-0" style={{ color: '#555', fontSize: '11px' }}>{q.serie}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CLASES DESTACADAS */}
       <section style={{ padding: '80px 0', backgroundColor: '#0a0a0a' }}>
         <div className="container">
@@ -111,8 +214,8 @@ export default function Inicio() {
             ].map((clase, i) => (
               <div key={i} className="col-md-6 col-lg-4 mb-4">
                 <div className="card h-100" style={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '12px', overflow: 'hidden', transition: 'transform 0.2s' }}
-                  onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'}
-                  onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.border = '1px solid #e94560'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.border = '1px solid #333'; }}
                 >
                   <div style={{ position: 'relative' }}>
                     <img src={clase.img} alt={clase.nombre} style={{ width: '100%', height: '180px', objectFit: 'cover' }} />
@@ -225,45 +328,17 @@ export default function Inicio() {
                   <form onSubmit={handleContacto}>
                     <div className="mb-3">
                       <label className="form-label text-white">Nombre</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        style={{ backgroundColor: '#0a0a0a', color: 'white', border: '1px solid #333' }}
-                        placeholder="Tu nombre"
-                        value={contacto.nombre}
-                        onChange={e => setContacto({ ...contacto, nombre: e.target.value })}
-                        required
-                      />
+                      <input type="text" className="form-control" style={{ backgroundColor: '#0a0a0a', color: 'white', border: '1px solid #333' }} placeholder="Tu nombre" value={contacto.nombre} onChange={e => setContacto({ ...contacto, nombre: e.target.value })} required />
                     </div>
                     <div className="mb-3">
                       <label className="form-label text-white">Email</label>
-                      <input
-                        type="email"
-                        className="form-control"
-                        style={{ backgroundColor: '#0a0a0a', color: 'white', border: '1px solid #333' }}
-                        placeholder="tu@email.com"
-                        value={contacto.email}
-                        onChange={e => setContacto({ ...contacto, email: e.target.value })}
-                        required
-                      />
+                      <input type="email" className="form-control" style={{ backgroundColor: '#0a0a0a', color: 'white', border: '1px solid #333' }} placeholder="tu@email.com" value={contacto.email} onChange={e => setContacto({ ...contacto, email: e.target.value })} required />
                     </div>
                     <div className="mb-3">
                       <label className="form-label text-white">Mensaje</label>
-                      <textarea
-                        className="form-control"
-                        rows="4"
-                        style={{ backgroundColor: '#0a0a0a', color: 'white', border: '1px solid #333' }}
-                        placeholder="¿En qué podemos ayudarte?"
-                        value={contacto.mensaje}
-                        onChange={e => setContacto({ ...contacto, mensaje: e.target.value })}
-                        required
-                      />
+                      <textarea className="form-control" rows="4" style={{ backgroundColor: '#0a0a0a', color: 'white', border: '1px solid #333' }} placeholder="¿En qué podemos ayudarte?" value={contacto.mensaje} onChange={e => setContacto({ ...contacto, mensaje: e.target.value })} required />
                     </div>
-                    <button
-                      type="submit"
-                      className="btn btn-danger w-100 fw-bold"
-                      disabled={enviando}
-                    >
+                    <button type="submit" className="btn btn-danger w-100 fw-bold" disabled={enviando}>
                       {enviando ? '📨 Enviando...' : '📨 Enviar mensaje'}
                     </button>
                   </form>
@@ -281,15 +356,15 @@ export default function Inicio() {
                   <h6 className="fw-bold text-white mb-3">Síguenos</h6>
                   <div className="d-flex gap-3">
                     <a href="https://www.instagram.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">
-                        <i className="bi bi-instagram me-1"></i> Instagram
-                      </a>
-                      <a href="https://www.tiktok.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">
-                        <i className="bi bi-tiktok me-1"></i> TikTok
-                      </a>
-                      <a href="https://www.youtube.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">
-                        <i className="bi bi-youtube me-1"></i> YouTube
-                      </a>
-                     </div>
+                      <i className="bi bi-instagram me-1"></i> Instagram
+                    </a>
+                    <a href="https://www.tiktok.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">
+                      <i className="bi bi-tiktok me-1"></i> TikTok
+                    </a>
+                    <a href="https://www.youtube.com" target="_blank" rel="noreferrer" className="btn btn-outline-danger btn-sm">
+                      <i className="bi bi-youtube me-1"></i> YouTube
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
