@@ -1,5 +1,4 @@
- 
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const entrenadores = [
   {
@@ -71,6 +70,13 @@ const entrenadores = [
 ];
 
 export default function Entrenadores() {
+  const [mensajeEntrenador, setMensajeEntrenador] = useState('');
+
+  const contratar = (nombre) => {
+    setMensajeEntrenador(`✅ ¡Solicitud enviada! Contactaremos contigo en la máxima brevedad posible en horario laboral (L-V 9:00-18:00) para concertar tu cita con ${nombre}.`);
+    setTimeout(() => setMensajeEntrenador(''), 6000);
+  };
+
   return (
     <div style={{ backgroundColor: '#0a0a0a', minHeight: '100vh', color: 'white' }}>
 
@@ -87,6 +93,13 @@ export default function Entrenadores() {
       </div>
 
       <div className="container py-5">
+
+        {mensajeEntrenador && (
+          <div className="alert alert-success fw-bold text-center" style={{ position: 'sticky', top: '70px', zIndex: 100 }}>
+            {mensajeEntrenador}
+          </div>
+        )}
+
         <div className="row">
           {entrenadores.map((e, i) => (
             <div key={i} className="col-md-6 col-lg-4 mb-4">
@@ -126,9 +139,13 @@ export default function Entrenadores() {
                       <small style={{ color: '#aaaaaa' }}>🕐 Disponibilidad</small>
                       <small className="fw-bold text-white">{e.disponibilidad}</small>
                     </div>
-                    <Link to="/registro" className="btn w-100 fw-bold text-white" style={{ backgroundColor: '#e94560' }}>
+                    <button
+                      className="btn w-100 fw-bold text-white"
+                      style={{ backgroundColor: '#e94560' }}
+                      onClick={() => contratar(e.nombre)}
+                    >
                       Contratar entrenador
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
