@@ -9,17 +9,36 @@ export default function Clases() {
   const [cargando, setCargando] = useState(true);
   const [reservando, setReservando] = useState(null);
   const [mensaje, setMensaje] = useState('');
+  const [mensajeTipo, setMensajeTipo] = useState('success');
+  const [reservasActivas, setReservasActivas] = useState([]);
   const { token, usuario } = useAuth();
 
   useEffect(() => {
     axios.get(`${API_URL}/api/clases`)
       .then(res => setClases(res.data))
       .finally(() => setCargando(false));
-  }, []);
+
+    if (token) {
+      axios.get(`${API_URL}/api/reservas/mis-reservas`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
+        const activas = res.data
+          .filter(r => r.estado === 'confirmada')
+          .map(r => r.horario_id);
+        setReservasActivas(activas);
+      }).catch(() => {});
+    }
+  }, [token]);
+
+  const mostrarMensaje = (texto, tipo = 'success') => {
+    setMensaje(texto);
+    setMensajeTipo(tipo);
+    setTimeout(() => setMensaje(''), 4000);
+  };
 
   const reservar = async (horario_id) => {
     if (!token) {
-      setMensaje('Debes iniciar sesión para reservar');
+      mostrarMensaje('Debes iniciar sesión para reservar', 'danger');
       return;
     }
     setReservando(horario_id);
@@ -29,14 +48,23 @@ export default function Clases() {
         { horario_id, fecha },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setMensaje('¡Reserva realizada correctamente!');
+      mostrarMensaje('✅ ¡Reserva realizada correctamente!', 'success');
+      setReservasActivas(prev => [...prev, horario_id]);
       const res = await axios.get(`${API_URL}/api/clases`);
       setClases(res.data);
     } catch (err) {
-      setMensaje(err.response?.data?.error || 'Error al reservar');
+      const error = err.response?.data?.error || 'Error al reservar';
+      if (error.includes('membresía') || error.includes('abonado')) {
+        mostrarMensaje('⚠️ Debes activar tu membresía para reservar clases. Ve al Dashboard.', 'warning');
+      } else if (error.includes('misma hora') || error.includes('mismo horario')) {
+        mostrarMensaje('⚠️ Ya tienes una clase reservada a esa misma hora.', 'warning');
+      } else if (error.includes('4 clases')) {
+        mostrarMensaje('⚠️ No puedes reservar más de 4 clases en el mismo día.', 'warning');
+      } else {
+        mostrarMensaje(`❌ ${error}`, 'danger');
+      }
     } finally {
       setReservando(null);
-      setTimeout(() => setMensaje(''), 3000);
     }
   };
 
@@ -55,7 +83,7 @@ export default function Clases() {
         <p className="text-muted mb-4">Elige tu actividad favorita y reserva tu plaza</p>
 
         {mensaje && (
-          <div className={`alert ${mensaje.includes('correctamente') ? 'alert-success' : 'alert-danger'} alert-dismissible`}>
+          <div className={`alert alert-${mensajeTipo}`} style={{ position: 'sticky', top: '70px', zIndex: 100, fontWeight: 'bold' }}>
             {mensaje}
           </div>
         )}
@@ -125,29 +153,37 @@ export default function Clases() {
                             <small className="fw-bold text-capitalize" style={{ color: '#e94560' }}>
                               📅 {dia}
                             </small>
-                            {horariosDelDia.map(h => (
-                              <div key={h.id} className="d-flex justify-content-between align-items-center mt-1 p-2"
-                                style={{ backgroundColor: '#f8f9fa', borderRadius: '6px' }}>
-                                <span className="small">🕐 {h.hora_inicio.slice(0, 5)} - {h.hora_fin.slice(0, 5)}</span>
-                                <span className="small text-muted">
-                                  {h.aforo_maximo - h.plazas_ocupadas} plazas
-                                </span>
-                                {usuario ? (
-                                  <button
-                                    className="btn btn-sm text-white"
-                                    style={{ backgroundColor: h.plazas_ocupadas >= h.aforo_maximo ? '#999' : '#e94560', fontSize: '11px' }}
-                                    onClick={() => reservar(h.id)}
-                                    disabled={reservando === h.id || h.plazas_ocupadas >= h.aforo_maximo}
-                                  >
-                                    {h.plazas_ocupadas >= h.aforo_maximo ? 'Completo' : reservando === h.id ? '...' : 'Reservar'}
-                                  </button>
-                                ) : (
-                                  <Link to="/login" className="btn btn-sm" style={{ backgroundColor: '#e94560', color: 'white', fontSize: '11px' }}>
-                                    Acceder
-                                  </Link>
-                                )}
-                              </div>
-                            ))}
+                            {horariosDelDia.map(h => {
+                              const yaReservado = reservasActivas.includes(h.id);
+                              const completo = h.plazas_ocupadas >= h.aforo_maximo;
+                              return (
+                                <div key={h.id} className="d-flex justify-content-between align-items-center mt-1 p-2"
+                                  style={{ backgroundColor: yaReservado ? '#e8f5e9' : '#f8f9fa', borderRadius: '6px', border: yaReservado ? '1px solid #4caf50' : 'none' }}>
+                                  <span className="small">🕐 {h.hora_inicio.slice(0, 5)} - {h.hora_fin.slice(0, 5)}</span>
+                                  <span className="small text-muted">
+                                    {completo ? '0 plazas' : `${h.aforo_maximo - h.plazas_ocupadas} plazas`}
+                                  </span>
+                                  {usuario ? (
+                                    <button
+                                      className="btn btn-sm text-white"
+                                      style={{
+                                        backgroundColor: yaReservado ? '#4caf50' : completo ? '#999' : '#e94560',
+                                        fontSize: '11px',
+                                        minWidth: '70px'
+                                      }}
+                                      onClick={() => !yaReservado && !completo && reservar(h.id)}
+                                      disabled={reservando === h.id || completo || yaReservado}
+                                    >
+                                      {yaReservado ? '✓ Reservado' : completo ? 'Completo' : reservando === h.id ? '...' : 'Reservar'}
+                                    </button>
+                                  ) : (
+                                    <Link to="/login" className="btn btn-sm" style={{ backgroundColor: '#e94560', color: 'white', fontSize: '11px' }}>
+                                      Acceder
+                                    </Link>
+                                  )}
+                                </div>
+                              );
+                            })}
                           </div>
                         );
                       })}
