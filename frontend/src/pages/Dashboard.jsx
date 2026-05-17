@@ -4,6 +4,16 @@ import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import API_URL from '../config';
 
+const frasesSayayin = [
+  '⚡ ¡El poder del Super Sayayin ha despertado! ¡Bienvenido al dojo, guerrero!',
+  '🔥 ¡Tu ki se ha disparado! ¡Ya eres parte del AzukyGym!',
+  '💪 ¡Has superado tus límites! ¡El camino del guerrero comienza ahora!',
+  '🌟 ¡La transformación ha comenzado! ¡Eres un verdadero guerrero anime!',
+  '⚔️ ¡El dojo te da la bienvenida! ¡Entrena duro y supera tus límites!',
+];
+
+const fraseSayayin = frasesSayayin[Math.floor(Math.random() * frasesSayayin.length)];
+
 export default function Dashboard() {
   const { usuario, token } = useAuth();
   const [resumen, setResumen] = useState(null);
@@ -15,6 +25,7 @@ export default function Dashboard() {
   const [pago, setPago] = useState({ titular: '', numero: '', fecha: '', cvv: '' });
   const [pagando, setPagando] = useState(false);
   const [pagoExito, setPagoExito] = useState(false);
+  const [mostrarSayayin, setMostrarSayayin] = useState(false);
 
   const planes = [
     { nombre: 'Básico', precio: 25, features: ['Acceso sala de musculación', 'Vestuarios', 'App de gestión'] },
@@ -74,7 +85,9 @@ export default function Dashboard() {
         setMostrarPago(false);
         setMostrarPlanes(false);
         setAbonado(true);
+        setMostrarSayayin(true);
         setPago({ titular: '', numero: '', fecha: '', cvv: '' });
+        setTimeout(() => setMostrarSayayin(false), 6000);
       } catch {
         setPagando(false);
       }
@@ -87,6 +100,24 @@ export default function Dashboard() {
         <h2 className="fw-bold mb-4">
           Hola, <span style={{ color: '#e94560' }}>{usuario?.nombre}</span> 👋
         </h2>
+
+        {/* MENSAJE SAYAYIN */}
+        {mostrarSayayin && (
+          <div className="mb-4 p-4 text-center text-white anime-pulse"
+            style={{
+              background: 'linear-gradient(135deg, #1a0a0a, #0a0a1a)',
+              border: '2px solid #e94560',
+              borderRadius: '12px',
+              fontSize: '18px',
+              fontWeight: 'bold'
+            }}>
+            <div style={{ fontSize: '50px', marginBottom: '10px' }}>⚡🔥⚡</div>
+            <p className="mb-0 anime-glow">{fraseSayayin}</p>
+            <p className="mb-0 mt-2" style={{ fontSize: '14px', color: '#aaaaaa' }}>
+              ¡Hola <strong style={{ color: '#e94560' }}>{usuario?.nombre}</strong>! El poder del guerrero anime ahora corre por tus venas.
+            </p>
+          </div>
+        )}
 
         {/* ESTADO ABONADO */}
         {usuario?.tipo === 'socio' && (
@@ -106,7 +137,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {pagoExito && (
+        {pagoExito && !mostrarSayayin && (
           <div className="alert alert-success mb-4">
             🎉 <strong>¡Pago realizado correctamente!</strong> Ya eres socio activo de AzukyGym. ¡Bienvenido!
           </div>
@@ -121,7 +152,7 @@ export default function Dashboard() {
                 {planes.map((plan, i) => (
                   <div key={i} className="col-md-4 mb-3">
                     <div
-                      className={`card h-100 text-center`}
+                      className="card h-100 text-center"
                       style={{
                         cursor: 'pointer',
                         border: planSeleccionado?.nombre === plan.nombre ? '3px solid #e94560' : '1px solid #dee2e6',
@@ -174,65 +205,35 @@ export default function Dashboard() {
                   <form onSubmit={handlePago}>
                     <div className="mb-3">
                       <label className="form-label fw-bold">Titular de la tarjeta</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Nombre Apellidos"
-                        value={pago.titular}
-                        onChange={e => setPago({ ...pago, titular: e.target.value })}
-                        required
-                      />
+                      <input type="text" className="form-control" placeholder="Nombre Apellidos" value={pago.titular} onChange={e => setPago({ ...pago, titular: e.target.value })} required />
                     </div>
                     <div className="mb-3">
                       <label className="form-label fw-bold">Número de tarjeta</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="1234 5678 9012 3456"
-                        maxLength={19}
-                        value={pago.numero}
+                      <input type="text" className="form-control" placeholder="1234 5678 9012 3456" maxLength={19} value={pago.numero}
                         onChange={e => {
                           const val = e.target.value.replace(/\D/g, '').slice(0, 16);
                           const formatted = val.replace(/(.{4})/g, '$1 ').trim();
                           setPago({ ...pago, numero: formatted });
-                        }}
-                        required
-                      />
+                        }} required />
                     </div>
                     <div className="row">
                       <div className="col-6 mb-3">
                         <label className="form-label fw-bold">Fecha de caducidad</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="MM/AA"
-                          maxLength={5}
-                          value={pago.fecha}
+                        <input type="text" className="form-control" placeholder="MM/AA" maxLength={5} value={pago.fecha}
                           onChange={e => {
                             let val = e.target.value.replace(/\D/g, '').slice(0, 4);
                             if (val.length >= 2) val = val.slice(0, 2) + '/' + val.slice(2);
                             setPago({ ...pago, fecha: val });
-                          }}
-                          required
-                        />
+                          }} required />
                       </div>
                       <div className="col-6 mb-3">
                         <label className="form-label fw-bold">CVV</label>
-                        <input
-                          type="password"
-                          className="form-control"
-                          placeholder="123"
-                          maxLength={3}
-                          value={pago.cvv}
-                          onChange={e => setPago({ ...pago, cvv: e.target.value.replace(/\D/g, '').slice(0, 3) })}
-                          required
-                        />
+                        <input type="password" className="form-control" placeholder="123" maxLength={3} value={pago.cvv}
+                          onChange={e => setPago({ ...pago, cvv: e.target.value.replace(/\D/g, '').slice(0, 3) })} required />
                       </div>
                     </div>
                     <div className="d-flex gap-3">
-                      <button type="button" className="btn btn-outline-secondary w-50" onClick={() => setMostrarPago(false)}>
-                        Volver
-                      </button>
+                      <button type="button" className="btn btn-outline-secondary w-50" onClick={() => setMostrarPago(false)}>Volver</button>
                       <button type="submit" className="btn btn-danger fw-bold w-50" disabled={pagando}>
                         {pagando ? '⏳ Procesando...' : `Pagar ${planSeleccionado?.precio}€`}
                       </button>
@@ -293,9 +294,7 @@ export default function Dashboard() {
                 <h1>🏋️</h1>
                 <h5 className="fw-bold">Clases</h5>
                 <p className="text-muted">Ver todas las clases disponibles</p>
-                <Link to="/clases" className="btn text-white" style={{ backgroundColor: '#e94560' }}>
-                  Ver clases
-                </Link>
+                <Link to="/clases" className="btn text-white" style={{ backgroundColor: '#e94560' }}>Ver clases</Link>
               </div>
             </div>
           </div>
@@ -305,9 +304,7 @@ export default function Dashboard() {
                 <h1>📅</h1>
                 <h5 className="fw-bold">Mis reservas</h5>
                 <p className="text-muted">Gestiona tus reservas de clases</p>
-                <Link to="/mis-reservas" className="btn text-white" style={{ backgroundColor: '#e94560' }}>
-                  Ver reservas
-                </Link>
+                <Link to="/mis-reservas" className="btn text-white" style={{ backgroundColor: '#e94560' }}>Ver reservas</Link>
               </div>
             </div>
           </div>
@@ -317,9 +314,7 @@ export default function Dashboard() {
                 <h1>💳</h1>
                 <h5 className="fw-bold">Mis cuotas</h5>
                 <p className="text-muted">Consulta el estado de tus pagos</p>
-                <Link to="/mis-cuotas" className="btn text-white" style={{ backgroundColor: '#e94560' }}>
-                  Ver cuotas
-                </Link>
+                <Link to="/mis-cuotas" className="btn text-white" style={{ backgroundColor: '#e94560' }}>Ver cuotas</Link>
               </div>
             </div>
           </div>
@@ -330,9 +325,7 @@ export default function Dashboard() {
                   <h1>💪</h1>
                   <h5 className="fw-bold">Rutinas y Dietas</h5>
                   <p className="text-muted">Accede a tu plan de entrenamiento</p>
-                  <Link to="/rutinas" className="btn text-white fw-bold" style={{ backgroundColor: '#e94560' }}>
-                    Ver rutinas
-                  </Link>
+                  <Link to="/rutinas" className="btn text-white fw-bold" style={{ backgroundColor: '#e94560' }}>Ver rutinas</Link>
                 </div>
               </div>
             </div>
