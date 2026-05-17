@@ -26,8 +26,7 @@ const solicitarReset = async (req, res) => {
     const enlace = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
 
     await enviarResetPassword(usuario.nombre, email, enlace);
-
-    res.json({ mensaje: 'Si el email existe recibirás un correo con las instrucciones' });
+    res.json({ mensaje: 'Si el email existe recibirás un correo con las instrucciones', token });
   } catch (error) {
     res.status(500).json({ error: 'Error al procesar la solicitud' });
   }
