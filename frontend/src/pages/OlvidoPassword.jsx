@@ -1,8 +1,9 @@
- 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import emailjs from '@emailjs/browser';
 import API_URL from '../config';
+import { EMAILJS_CONFIG } from '../config/emailjs';
 
 export default function OlvidoPassword() {
   const [email, setEmail] = useState('');
@@ -15,9 +16,19 @@ export default function OlvidoPassword() {
     setCargando(true);
     setError('');
     try {
-      await axios.post(`${API_URL}/api/password/solicitar`, { email });
+      const res = await axios.post(`${API_URL}/api/password/solicitar`, { email });
+      const token = res.data.token || '';
+      const enlace = `https://azuky-gym.vercel.app/reset-password?token=${token}`;
+
+      emailjs.send(
+        EMAILJS_CONFIG.serviceId,
+        EMAILJS_CONFIG.templateReset,
+        { nombre: email, email_destino: email, enlace },
+        EMAILJS_CONFIG.publicKey
+      ).catch(err => console.error('Error email reset:', err));
+
       setEnviado(true);
-    } catch  {
+    } catch {
       setError('Error al procesar la solicitud. Inténtalo de nuevo.');
     } finally {
       setCargando(false);

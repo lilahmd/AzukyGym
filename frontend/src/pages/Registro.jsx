@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import emailjs from '@emailjs/browser';
 import API_URL from '../config';
+import { EMAILJS_CONFIG } from '../config/emailjs';
 
 export default function Registro() {
   const [form, setForm] = useState({ nombre: '', email: '', password: '', telefono: '' });
@@ -48,6 +50,14 @@ export default function Registro() {
     setCargando(true);
     try {
       await axios.post(`${API_URL}/api/auth/registro`, form);
+
+      emailjs.send(
+        EMAILJS_CONFIG.serviceId,
+        EMAILJS_CONFIG.templateBienvenida,
+        { nombre: form.nombre, email_destino: form.email },
+        EMAILJS_CONFIG.publicKey
+      ).catch(err => console.error('Error email:', err));
+
       setExito('¡Cuenta creada correctamente! Revisa tu email. Redirigiendo...');
       setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
