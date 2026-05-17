@@ -18,6 +18,7 @@ export default function OlvidoPassword() {
     try {
       const res = await axios.post(`${API_URL}/api/password/solicitar`, { email });
       const token = res.data.token || '';
+      setEnviado(true);
       const enlace = `https://azuky-gym.vercel.app/reset-password?token=${token}`;
 
       emailjs.send(
@@ -27,7 +28,6 @@ export default function OlvidoPassword() {
         EMAILJS_CONFIG.publicKey
       ).catch(err => console.error('Error email reset:', err));
 
-      setEnviado(true);
     } catch {
       setError('Error al procesar la solicitud. Inténtalo de nuevo.');
     } finally {
