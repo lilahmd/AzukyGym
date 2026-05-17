@@ -87,7 +87,7 @@ export default function Dashboard() {
         setAbonado(true);
         setMostrarSayayin(true);
         setPago({ titular: '', numero: '', fecha: '', cvv: '' });
-        setTimeout(() => setMostrarSayayin(false), 6000);
+        setTimeout(() => setMostrarSayayin(false), 10000);
       } catch {
         setPagando(false);
       }
@@ -104,13 +104,20 @@ export default function Dashboard() {
         {/* MENSAJE SAYAYIN */}
         {mostrarSayayin && (
           <div className="mb-4 p-4 text-center text-white anime-pulse"
-            style={{
-              background: 'linear-gradient(135deg, #1a0a0a, #0a0a1a)',
-              border: '2px solid #e94560',
-              borderRadius: '12px',
-              fontSize: '18px',
-              fontWeight: 'bold'
-            }}>
+  style={{
+    position: 'fixed',
+    top: '80px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 9999,
+    width: '90%',
+    maxWidth: '600px',
+    background: 'linear-gradient(135deg, #1a0a0a, #0a0a1a)',
+    border: '2px solid #e94560',
+    borderRadius: '12px',
+    fontSize: '18px',
+    fontWeight: 'bold'
+  }}>
             <div style={{ fontSize: '50px', marginBottom: '10px' }}>⚡🔥⚡</div>
             <p className="mb-0 anime-glow">{fraseSayayin}</p>
             <p className="mb-0 mt-2" style={{ fontSize: '14px', color: '#aaaaaa' }}>
