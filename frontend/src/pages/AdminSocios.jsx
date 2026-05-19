@@ -20,7 +20,7 @@ export default function AdminSocios() {
     } catch {
       setMensaje('Error al cargar socios');
     } finally {
-      setCargando(false);
+      setTimeout(() => setCargando(false), 0);
     }
   };
 
@@ -75,6 +75,7 @@ export default function AdminSocios() {
 
         <div className="card shadow">
           <div className="card-body p-0">
+            <div className="table-responsive">
             <table className="table table-hover mb-0">
               <thead style={{ backgroundColor: '#1a1a2e', color: 'white' }}>
                 <tr>
@@ -112,6 +113,7 @@ export default function AdminSocios() {
             </table>
           </div>
         </div>
+    </div>
 
         <p className="text-muted small mt-3">
           Total: {socios.length} socio{socios.length !== 1 ? 's' : ''} registrado{socios.length !== 1 ? 's' : ''}
