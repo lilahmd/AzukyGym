@@ -13,6 +13,7 @@ import Rutinas from './pages/Rutinas';
 import OlvidoPassword from './pages/OlvidoPassword';
 import ResetPassword from './pages/ResetPassword';
 import AdminClases from './pages/AdminClases';
+import AdminSocios from './pages/AdminSocios';
 
 function RutaProtegida({ children }) {
   const { usuario, cargando } = useAuth();
@@ -38,6 +39,7 @@ function AppRoutes() {
         <Route path="/entrenadores" element={<Entrenadores />} />
         <Route path="/rutinas" element={<RutaProtegida><Rutinas /></RutaProtegida>} />
         <Route path="/admin/clases" element={<RutaProtegida><AdminClases /></RutaProtegida>} />
+        <Route path="/admin/socios" element={<RutaProtegida><AdminSocios /></RutaProtegida>} />
       </Routes>
     </>
   );
