@@ -375,7 +375,7 @@ export default function Inicio() {
       {/* FOOTER */}
       <footer style={{ backgroundColor: '#050505', borderTop: '2px solid #e94560', padding: '20px 0' }}>
         <div className="container text-center">
-          <p className="mb-0" style={{ color: '#555' }}>© 2025 AzukyGym. Todos los derechos reservados. | Desarrollado por Laila Al Moudi</p>
+          <p className="mb-0" style={{ color: '#555' }}>© 2026 AzukyGym. Todos los derechos reservados. | Desarrollado por Laila Al Moudi</p>
         </div>
       </footer>
 

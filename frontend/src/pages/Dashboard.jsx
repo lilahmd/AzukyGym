@@ -104,20 +104,20 @@ export default function Dashboard() {
         {/* MENSAJE SAYAYIN */}
         {mostrarSayayin && (
           <div className="mb-4 p-4 text-center text-white anime-pulse"
-  style={{
-    position: 'fixed',
-    top: '80px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    zIndex: 9999,
-    width: '90%',
-    maxWidth: '600px',
-    background: 'linear-gradient(135deg, #1a0a0a, #0a0a1a)',
-    border: '2px solid #e94560',
-    borderRadius: '12px',
-    fontSize: '18px',
-    fontWeight: 'bold'
-  }}>
+            style={{
+              position: 'fixed',
+              top: '80px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 9999,
+              width: '90%',
+              maxWidth: '600px',
+              background: 'linear-gradient(135deg, #1a0a0a, #0a0a1a)',
+              border: '2px solid #e94560',
+              borderRadius: '12px',
+              fontSize: '18px',
+              fontWeight: 'bold'
+            }}>
             <div style={{ fontSize: '50px', marginBottom: '10px' }}>⚡🔥⚡</div>
             <p className="mb-0 anime-glow">{fraseSayayin}</p>
             <p className="mb-0 mt-2" style={{ fontSize: '14px', color: '#aaaaaa' }}>
@@ -257,40 +257,70 @@ export default function Dashboard() {
 
         {/* PANEL ADMIN */}
         {usuario?.tipo === 'admin' && resumen && (
-          <div className="row mb-4">
-            <div className="col-md-3 mb-3">
-              <div className="card text-white text-center" style={{ backgroundColor: '#e94560' }}>
-                <div className="card-body">
-                  <h1 className="fw-bold">{resumen.totalSocios}</h1>
-                  <p className="mb-0">Socios activos</p>
+          <>
+            <div className="row mb-4">
+              <div className="col-md-3 mb-3">
+                <div className="card text-white text-center" style={{ backgroundColor: '#e94560' }}>
+                  <div className="card-body">
+                    <h1 className="fw-bold">{resumen.totalSocios}</h1>
+                    <p className="mb-0">Socios activos</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3 mb-3">
+                <div className="card text-white text-center" style={{ backgroundColor: '#1a1a2e' }}>
+                  <div className="card-body">
+                    <h1 className="fw-bold">{resumen.totalClases}</h1>
+                    <p className="mb-0">Clases disponibles</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3 mb-3">
+                <div className="card text-white text-center" style={{ backgroundColor: '#e94560' }}>
+                  <div className="card-body">
+                    <h1 className="fw-bold">{resumen.cuotasPendientes}</h1>
+                    <p className="mb-0">Cuotas pendientes</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3 mb-3">
+                <div className="card text-white text-center" style={{ backgroundColor: '#1a1a2e' }}>
+                  <div className="card-body">
+                    <h1 className="fw-bold">{resumen.reservasHoy}</h1>
+                    <p className="mb-0">Reservas hoy</p>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="col-md-3 mb-3">
-              <div className="card text-white text-center" style={{ backgroundColor: '#1a1a2e' }}>
-                <div className="card-body">
-                  <h1 className="fw-bold">{resumen.totalClases}</h1>
-                  <p className="mb-0">Clases disponibles</p>
+
+            {/* ACCESO ADMIN A ALUMNOS POR CLASE */}
+            <div className="row mb-4">
+              <div className="col-md-4 mb-3">
+                <div className="card shadow h-100" style={{ border: '2px solid #1a1a2e' }}>
+                  <div className="card-body text-center">
+                    <h1>📋</h1>
+                    <h5 className="fw-bold">Alumnos por clase</h5>
+                    <p className="text-muted">Ver quién está apuntado a cada clase</p>
+                    <Link to="/admin/clases" className="btn text-white fw-bold" style={{ backgroundColor: '#1a1a2e' }}>
+                      Ver alumnos
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 mb-3">
+                <div className="card shadow h-100" style={{ border: '2px solid #1a1a2e' }}>
+                  <div className="card-body text-center">
+                    <h1>👥</h1>
+                    <h5 className="fw-bold">Gestión de socios</h5>
+                    <p className="text-muted">Activar o desactivar socios</p>
+                    <Link to="/admin/socios" className="btn text-white fw-bold" style={{ backgroundColor: '#1a1a2e' }}>
+                      Ver socios
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="col-md-3 mb-3">
-              <div className="card text-white text-center" style={{ backgroundColor: '#e94560' }}>
-                <div className="card-body">
-                  <h1 className="fw-bold">{resumen.cuotasPendientes}</h1>
-                  <p className="mb-0">Cuotas pendientes</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-3 mb-3">
-              <div className="card text-white text-center" style={{ backgroundColor: '#1a1a2e' }}>
-                <div className="card-body">
-                  <h1 className="fw-bold">{resumen.reservasHoy}</h1>
-                  <p className="mb-0">Reservas hoy</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          </>
         )}
 
         {/* ACCESOS RÁPIDOS */}
