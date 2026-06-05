@@ -52,6 +52,11 @@ export default function Navbar() {
                 <li className="nav-item">
                   <Link className="nav-link text-white" to="/mis-cuotas">Mis Cuotas</Link>
                 </li>
+                {usuario.tipo === 'profesor' && (
+  <li className="nav-item">
+    <Link className="nav-link text-white" to="/profesor/clases">📋 Mis Clases</Link>
+  </li>
+)}
               </>
             )}
           </ul>

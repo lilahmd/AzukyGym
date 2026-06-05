@@ -14,6 +14,7 @@ import OlvidoPassword from './pages/OlvidoPassword';
 import ResetPassword from './pages/ResetPassword';
 import AdminClases from './pages/AdminClases';
 import AdminSocios from './pages/AdminSocios';
+import ProfesorClases from './pages/ProfesorClases';
 
 function RutaProtegida({ children }) {
   const { usuario, cargando } = useAuth();
@@ -40,6 +41,7 @@ function AppRoutes() {
         <Route path="/rutinas" element={<RutaProtegida><Rutinas /></RutaProtegida>} />
         <Route path="/admin/clases" element={<RutaProtegida><AdminClases /></RutaProtegida>} />
         <Route path="/admin/socios" element={<RutaProtegida><AdminSocios /></RutaProtegida>} />
+        <Route path="/profesor/clases" element={<RutaProtegida><ProfesorClases /></RutaProtegida>} />
       </Routes>
     </>
   );

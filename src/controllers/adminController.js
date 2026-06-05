@@ -51,4 +51,30 @@ const resumenAdmin = async (req, res) => {
   }
 };
 
-module.exports = { obtenerSocios, toggleSocio, resumenAdmin };
+const obtenerMisClases = async (req, res) => {
+  try {
+    const nombreProfesor = req.usuario.nombre;
+
+    const clases = await Clase.findAll({
+      where: { instructor: nombreProfesor, activo: true },
+      include: [{
+        model: Horario,
+        where: { activo: true },
+        required: false,
+        include: [{
+          model: Reserva,
+          where: { estado: 'confirmada' },
+          required: false,
+          include: [{ model: Usuario, attributes: ['id', 'nombre', 'email'] }]
+        }]
+      }]
+    });
+
+    res.json(clases);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener clases del profesor' });
+  }
+};
+
+module.exports = { obtenerSocios, toggleSocio, resumenAdmin, obtenerMisClases };

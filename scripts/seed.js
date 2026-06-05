@@ -1,5 +1,6 @@
 require('dotenv').config();
-const { sequelize } = require('../src/models/index');
+const bcrypt = require('bcrypt');
+const { sequelize, Usuario } = require('../src/models/index');
 const { QueryTypes } = require('sequelize');
 
 async function seed() {
@@ -58,7 +59,35 @@ async function seed() {
       );
     }
 
-    console.log('Todo insertado correctamente');
+    console.log('Clases y horarios insertados correctamente');
+
+    // ── PROFESORES ──────────────────────────────────────────────
+    const passHash = await bcrypt.hash('123456', 10);
+
+    const profesores = [
+      { nombre: 'Carlos García', email: 'carlos@azukygym.com', telefono: '+34600000001' },
+      { nombre: 'Ana Martínez',  email: 'ana@azukygym.com',    telefono: '+34600000002' },
+      { nombre: 'Laura Sánchez', email: 'laura@azukygym.com',  telefono: '+34600000003' },
+      { nombre: 'María López',   email: 'maria@azukygym.com',  telefono: '+34600000004' },
+      { nombre: 'Pedro Ruiz',    email: 'pedro@azukygym.com',  telefono: '+34600000005' },
+    ];
+
+    for (const p of profesores) {
+      const [usuario, creado] = await Usuario.findOrCreate({
+        where: { email: p.email },
+        defaults: {
+          nombre: p.nombre,
+          email: p.email,
+          password: passHash,
+          telefono: p.telefono,
+          tipo: 'profesor',
+          activo: true
+        }
+      });
+      console.log(`Profesor ${creado ? 'creado' : 'ya existía'}: ${p.nombre}`);
+    }
+
+    console.log('¡Todo insertado correctamente!');
     process.exit(0);
   } catch (error) {
     console.error('Error:', error.message);

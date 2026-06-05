@@ -26,7 +26,7 @@ const Usuario = sequelize.define('Usuario', {
     allowNull: true
   },
   tipo: {
-    type: DataTypes.ENUM('socio', 'admin'),
+    type: DataTypes.ENUM('socio', 'admin','profesor'),
     defaultValue: 'socio'
   },
   activo: {
