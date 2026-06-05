@@ -82,7 +82,7 @@ export default function ProfesorClases() {
                             </tr>
                           </thead>
                           <tbody>
-                            {horario.Reservas.map((r, i) => (
+                            {horario.Reservas.filter(r => r.Usuario).map((r,i)=> (
                               <tr key={r.id}>
                                 <td className="ps-3 text-muted">{i + 1}</td>
                                 <td className="fw-bold">{r.Usuario?.nombre}</td>
