@@ -1,4 +1,3 @@
- 
 const { Usuario, Reserva, Cuota, Clase, Horario } = require('../models/index');
 
 const obtenerSocios = async (req, res) => {
@@ -53,10 +52,16 @@ const resumenAdmin = async (req, res) => {
 
 const obtenerMisClases = async (req, res) => {
   try {
-    const nombreProfesor = req.usuario.nombre;
+    const usuarioId = req.usuario.id;
+
+    const profesor = await Usuario.findByPk(usuarioId, {
+      attributes: ['nombre']
+    });
+
+    if (!profesor) return res.status(404).json({ error: 'Profesor no encontrado' });
 
     const clases = await Clase.findAll({
-      where: { instructor: nombreProfesor, activo: true },
+      where: { instructor: profesor.nombre, activo: true },
       include: [{
         model: Horario,
         where: { activo: true },
