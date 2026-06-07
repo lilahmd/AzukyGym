@@ -41,13 +41,7 @@ export default function AdminSocios() {
     }
   };
 
-  const cuotaMes = (socio) => {
-    const mesActual = new Date().getMonth() + 1;
-    const anioActual = new Date().getFullYear();
-    if (!socio.Cuota && !socio.Cuotas) return null;
-    const cuotas = socio.Cuotas || (socio.Cuota ? [socio.Cuota] : []);
-    return cuotas.find(c => c.mes === mesActual && c.anio === anioActual) || null;
-  };
+  const cuotaMes = (socio) => socio.cuotaMesActual || null;
 
   if (usuario?.tipo !== 'admin') {
     return (

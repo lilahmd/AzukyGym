@@ -15,7 +15,15 @@ const obtenerSocios = async (req, res) => {
       }],
       order: [['createdAt', 'DESC']]
     });
-    res.json(socios);
+
+    // Añadir campo cuotaMes directamente en cada socio
+    const resultado = socios.map(s => {
+      const socioJson = s.toJSON();
+      const cuota = socioJson.Cuota || (socioJson.Cuotas && socioJson.Cuotas[0]) || null;
+      return { ...socioJson, cuotaMesActual: cuota };
+    });
+
+    res.json(resultado);
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener socios' });
   }
