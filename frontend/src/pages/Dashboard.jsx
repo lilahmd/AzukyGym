@@ -26,6 +26,7 @@ export default function Dashboard() {
   const [pagando, setPagando] = useState(false);
   const [pagoExito, setPagoExito] = useState(false);
   const [mostrarSayayin, setMostrarSayayin] = useState(false);
+  const [generando, setGenerando] = useState(false);
 
   const planes = [
     { nombre: 'Básico', precio: 25, features: ['Acceso sala de musculación', 'Vestuarios', 'App de gestión'] },
@@ -33,11 +34,16 @@ export default function Dashboard() {
     { nombre: 'Familiar', precio: 50, features: ['2 personas', 'Todo lo del Premium', 'Descuento en tienda'] },
   ];
 
+  const cargarResumen = async () => {
+    const res = await axios.get(`${API_URL}/api/admin/resumen`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setResumen(res.data);
+  };
+
   useEffect(() => {
     if (usuario?.tipo === 'admin') {
-      axios.get(`${API_URL}/api/admin/resumen`, {
-        headers: { Authorization: `Bearer ${token}` }
-      }).then(res => setResumen(res.data));
+      cargarResumen();
     }
 
     if (usuario?.tipo === 'socio') {
@@ -52,6 +58,24 @@ export default function Dashboard() {
       }).catch(() => {});
     }
   }, [pagoExito]);
+
+  const handleGenerarCuotas = async () => {
+    setGenerando(true);
+    try {
+      const mes = new Date().getMonth() + 1;
+      const anio = new Date().getFullYear();
+      const res = await axios.post(`${API_URL}/api/cuotas/generar-mensuales`,
+        { mes, anio, importe: 30 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert(res.data.mensaje);
+      await cargarResumen();
+    } catch (e) {
+      alert(e.response?.data?.error || 'Error al generar cuotas');
+    } finally {
+      setGenerando(false);
+    }
+  };
 
   const handlePago = async (e) => {
     e.preventDefault();
@@ -293,7 +317,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* ACCESO ADMIN A ALUMNOS POR CLASE */}
             <div className="row mb-4">
               <div className="col-md-4 mb-3">
                 <div className="card shadow h-100" style={{ border: '2px solid #1a1a2e' }}>
@@ -316,6 +339,23 @@ export default function Dashboard() {
                     <Link to="/admin/socios" className="btn text-white fw-bold" style={{ backgroundColor: '#1a1a2e' }}>
                       Ver socios
                     </Link>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 mb-3">
+                <div className="card shadow h-100" style={{ border: '2px solid #1a1a2e' }}>
+                  <div className="card-body text-center">
+                    <h1>💰</h1>
+                    <h5 className="fw-bold">Generar cuotas</h5>
+                    <p className="text-muted">Generar cuotas del mes actual para todos los socios</p>
+                    <button
+                      className="btn text-white fw-bold"
+                      style={{ backgroundColor: '#1a1a2e' }}
+                      disabled={generando}
+                      onClick={handleGenerarCuotas}
+                    >
+                      {generando ? 'Generando...' : 'Generar cuotas junio'}
+                    </button>
                   </div>
                 </div>
               </div>

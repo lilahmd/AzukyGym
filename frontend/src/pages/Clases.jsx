@@ -36,14 +36,23 @@ export default function Clases() {
     setTimeout(() => setMensaje(''), 4000);
   };
 
-  const reservar = async (horario_id) => {
+  const reservar = async (horario_id, dia_semana) => {
     if (!token) {
       mostrarMensaje('Debes iniciar sesión para reservar', 'danger');
       return;
     }
     setReservando(horario_id);
     try {
-      const fecha = new Date().toISOString().split('T')[0];
+      const diasSemanaNum = { lunes: 1, martes: 2, miercoles: 3, jueves: 4, viernes: 5, sabado: 6, domingo: 0 };
+      const hoy = new Date();
+      const diaHoy = hoy.getDay();
+      const diaClase = diasSemanaNum[dia_semana];
+      let diff = diaClase - diaHoy;
+      if (diff <= 0) diff += 7;
+      const fechaClase = new Date(hoy);
+      fechaClase.setDate(hoy.getDate() + diff);
+      const fecha = fechaClase.toISOString().split('T')[0];
+
       await axios.post(`${API_URL}/api/reservas`,
         { horario_id, fecha },
         { headers: { Authorization: `Bearer ${token}` } }
@@ -55,7 +64,7 @@ export default function Clases() {
     } catch (err) {
       const error = err.response?.data?.error || 'Error al reservar';
       if (error.includes('membresía') || error.includes('abonado')) {
-        mostrarMensaje('⚠️ Debes activar tu membresía para reservar clases. Ve al Dashboard.', 'warning');
+        mostrarMensaje('⚠️ Debes activar tu subscripción para reservar clases. Ve al Dashboard.', 'warning');
       } else if (error.includes('misma hora') || error.includes('mismo horario')) {
         mostrarMensaje('⚠️ Ya tienes una clase reservada a esa misma hora.', 'warning');
       } else if (error.includes('4 clases')) {
@@ -171,7 +180,7 @@ export default function Clases() {
                                         fontSize: '11px',
                                         minWidth: '70px'
                                       }}
-                                      onClick={() => !yaReservado && !completo && reservar(h.id)}
+                                      onClick={() => !yaReservado && !completo && reservar(h.id, h.dia_semana)}
                                       disabled={reservando === h.id || completo || yaReservado}
                                     >
                                       {yaReservado ? '✓ Reservado' : completo ? 'Completo' : reservando === h.id ? '...' : 'Reservar'}
