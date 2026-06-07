@@ -2,9 +2,17 @@ const { Usuario, Reserva, Cuota, Clase, Horario } = require('../models/index');
 
 const obtenerSocios = async (req, res) => {
   try {
+    const mesActual = new Date().getMonth() + 1;
+    const anioActual = new Date().getFullYear();
+
     const socios = await Usuario.findAll({
       where: { tipo: 'socio' },
       attributes: ['id', 'nombre', 'email', 'telefono', 'activo', 'createdAt'],
+      include: [{
+        model: Cuota,
+        where: { mes: mesActual, anio: anioActual },
+        required: false
+      }],
       order: [['createdAt', 'DESC']]
     });
     res.json(socios);

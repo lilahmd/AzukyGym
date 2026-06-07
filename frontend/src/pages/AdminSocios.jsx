@@ -1,4 +1,3 @@
- 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -42,6 +41,14 @@ export default function AdminSocios() {
     }
   };
 
+  const cuotaMes = (socio) => {
+    const mesActual = new Date().getMonth() + 1;
+    const anioActual = new Date().getFullYear();
+    if (!socio.Cuota && !socio.Cuotas) return null;
+    const cuotas = socio.Cuotas || (socio.Cuota ? [socio.Cuota] : []);
+    return cuotas.find(c => c.mes === mesActual && c.anio === anioActual) || null;
+  };
+
   if (usuario?.tipo !== 'admin') {
     return (
       <div className="container mt-5 text-center">
@@ -76,44 +83,59 @@ export default function AdminSocios() {
         <div className="card shadow">
           <div className="card-body p-0">
             <div className="table-responsive">
-            <table className="table table-hover mb-0">
-              <thead style={{ backgroundColor: '#1a1a2e', color: 'white' }}>
-                <tr>
-                  <th className="ps-3">#</th>
-                  <th>Nombre</th>
-                  <th>Email</th>
-                  <th>Teléfono</th>
-                  <th>Estado</th>
-                  <th>Acción</th>
-                </tr>
-              </thead>
-              <tbody>
-                {socios.map((s, i) => (
-                  <tr key={s.id}>
-                    <td className="ps-3 text-muted">{i + 1}</td>
-                    <td className="fw-bold">{s.nombre}</td>
-                    <td className="text-muted">{s.email}</td>
-                    <td className="text-muted">{s.telefono || '–'}</td>
-                    <td>
-                      <span className={`badge ${s.activo ? 'bg-success' : 'bg-danger'}`}>
-                        {s.activo ? 'Activo' : 'Inactivo'}
-                      </span>
-                    </td>
-                    <td>
-                      <button
-                        className={`btn btn-sm ${s.activo ? 'btn-outline-danger' : 'btn-outline-success'}`}
-                        onClick={() => toggleSocio(s.id, s.activo)}
-                      >
-                        {s.activo ? 'Desactivar' : 'Activar'}
-                      </button>
-                    </td>
+              <table className="table table-hover mb-0">
+                <thead style={{ backgroundColor: '#1a1a2e', color: 'white' }}>
+                  <tr>
+                    <th className="ps-3">#</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Cuota mes actual</th>
+                    <th>Estado cuenta</th>
+                    <th>Acción</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {socios.map((s, i) => {
+                    const cuota = cuotaMes(s);
+                    const pagada = cuota?.estado === 'pagada';
+                    const pendiente = cuota?.estado === 'pendiente';
+                    return (
+                      <tr key={s.id}>
+                        <td className="ps-3 text-muted">{i + 1}</td>
+                        <td className="fw-bold">{s.nombre}</td>
+                        <td className="text-muted">{s.email}</td>
+                        <td className="text-muted">{s.telefono || '–'}</td>
+                        <td>
+                          {pagada ? (
+                            <span className="badge bg-success">✅ Pagada</span>
+                          ) : pendiente ? (
+                            <span className="badge bg-warning text-dark">⏳ Pendiente</span>
+                          ) : (
+                            <span className="badge bg-secondary">— Sin cuota</span>
+                          )}
+                        </td>
+                        <td>
+                          <span className={`badge ${s.activo ? 'bg-success' : 'bg-danger'}`}>
+                            {s.activo ? 'Activo' : 'Inactivo'}
+                          </span>
+                        </td>
+                        <td>
+                          <button
+                            className={`btn btn-sm ${s.activo ? 'btn-outline-danger' : 'btn-outline-success'}`}
+                            onClick={() => toggleSocio(s.id, s.activo)}
+                          >
+                            {s.activo ? 'Desactivar' : 'Activar'}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-    </div>
 
         <p className="text-muted small mt-3">
           Total: {socios.length} socio{socios.length !== 1 ? 's' : ''} registrado{socios.length !== 1 ? 's' : ''}
