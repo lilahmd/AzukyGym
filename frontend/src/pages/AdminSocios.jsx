@@ -41,7 +41,12 @@ export default function AdminSocios() {
     }
   };
 
-  const cuotaMes = (socio) => socio.cuotaMesActual || null;
+ const cuotaMes = (socio) => {
+  const c = socio.cuotaMesActual;
+  if (!c) return null;
+  if (Array.isArray(c)) return c[0] || null;
+  return c;
+};
 
   if (usuario?.tipo !== 'admin') {
     return (
